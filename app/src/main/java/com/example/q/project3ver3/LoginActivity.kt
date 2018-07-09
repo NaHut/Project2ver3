@@ -1,5 +1,6 @@
 package com.example.q.project3ver3
 
+import android.app.ProgressDialog.show
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -27,6 +28,7 @@ class LoginActivity : AppCompatActivity() {
 
     val url = "http://143.248.36.215:8080"
 
+    var userID : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,16 +45,19 @@ class LoginActivity : AppCompatActivity() {
             var password = inputPassword.text;
             var result = SignIn(userId.toString(), password.toString())
 
+            userID = userId.toString()
+
             if(result == LOGIN){
+
                 val myIntent = Intent(this,MainActivity::class.java)
                 startActivity(myIntent)
                 finish()
             }
             else if(result == WRONG_PW){
-
+                Toast.makeText(this,"ERROR: Wrong PW", Toast.LENGTH_LONG).show()
             }
             else{
-
+                Toast.makeText(this,"ERROR: Please Register", Toast.LENGTH_LONG).show()
             }
 
         }
@@ -144,6 +149,10 @@ class LoginActivity : AppCompatActivity() {
             "ALREADY_MEMBER" -> serverRes = ALREADY_MEMBER
             "SIGN_UP" -> serverRes = SIGN_UP
         }
+    }
+
+    fun myGetUserId() : String{
+        return userID
     }
 }
 

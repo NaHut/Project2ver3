@@ -30,7 +30,7 @@ class MyContact : Fragment() {
         val rootView = inflater.inflate(R.layout.contact, container, false)
         val recyclerView = rootView.findViewById<RecyclerView>(R.id.recyclerView)
 
-        val userId = MainActivity().myGetUserId()
+        val userId = LoginActivity().myGetUserId()
         //DB와 연결하고 DB의 값을 가져옴
         loadData(userId)
         //DB의 모든 친구 정보를 contactList에 넣어줌
