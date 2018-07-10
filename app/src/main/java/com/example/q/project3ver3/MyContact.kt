@@ -22,7 +22,7 @@ import kotlin.collections.ArrayList
 
 var contact_list = ArrayList<Contact>()
 
-class MyContact : Fragment() , MyListener{
+class MyContact : Fragment() {
 
     val userId = LoginActivity().myGetUserId()
     lateinit var requstQueue : RequestQueue
@@ -31,7 +31,7 @@ class MyContact : Fragment() , MyListener{
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.contact, container, false)
         recyclerView = rootView.findViewById<RecyclerView>(R.id.recyclerView)
-
+        contact_list.clear()
         /*DB와 연결하고 DB의 값을 가져옴
         DB의 모든 친구 정보를 contactList에 넣어줌 */
         loadData(userId)
@@ -97,12 +97,7 @@ class MyContact : Fragment() , MyListener{
         }
     }
 
-    override fun MyListener(){
-        val contact_adapter = contactAdapter(contact_list,this.context)
-        recyclerView.setAdapter(contact_adapter)
-    }
-
-    class contactAdapter(val items : ArrayList<Contact>, val context : Context?) : RecyclerView.Adapter<ViewHolder>() {
+     class contactAdapter(val items : ArrayList<Contact>, val context : Context?) : RecyclerView.Adapter<ViewHolder>() {
 
         override fun getItemCount(): Int {
             return items.size

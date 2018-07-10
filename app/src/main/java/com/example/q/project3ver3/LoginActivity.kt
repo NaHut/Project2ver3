@@ -13,6 +13,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.q.project3ver3.model.Contact
 import org.json.JSONObject
 import java.util.*
 
@@ -23,12 +24,13 @@ const val ALREADY_MEMBER = 3
 const val SIGN_UP = 4
 
 var serverRes = NOT_MEMBER
+var userID : String = ""
 
 class LoginActivity : AppCompatActivity() {
 
     val url = "http://143.248.36.215:8080"
 
-    var userID : String = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
             if(result == LOGIN){
 
                 val myIntent = Intent(this,MainActivity::class.java)
+                myIntent.putExtra("userId", userID)
                 startActivity(myIntent)
                 finish()
             }

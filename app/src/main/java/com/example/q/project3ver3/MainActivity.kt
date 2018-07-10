@@ -18,27 +18,38 @@ import android.view.View
 import android.view.ViewGroup
 
 import android.widget.TextView
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.example.q.project3ver3.model.Contact
+import org.json.JSONArray
+import org.json.JSONObject
+import java.util.HashMap
+
+//var contact_list = ArrayList<Contact>()
 
 class MainActivity : AppCompatActivity() {
 
-    /**
-     * The [android.support.v4.view.PagerAdapter] that will provide
-     * fragments for each of the sections. We use a
-     * [FragmentPagerAdapter] derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * [android.support.v4.app.FragmentStatePagerAdapter].
-     */
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
-
-    /**
-     * The [ViewPager] that will host the section contents.
-     */
+    lateinit var userId : String
     private var mViewPager: ViewPager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //Login Acitiviy에서 보내준 intent를 받는다
+        val intent = getIntent()
+        userId = intent.getStringExtra("userId")
+
+        //DB에서 contact_list의 필요한 값들을 load한다
+//        loadData(userId)
+
+        //contact 임의의 값
+//        val tmp = Contact("전형준","010-4830-0139","path")
+//        contact_list.add(tmp)
+//        contact_list.add(tmp)
+
 
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -86,6 +97,52 @@ class MainActivity : AppCompatActivity() {
     /**
      * A placeholder fragment containing a simple view.
      */
+    fun loadData(userId: String) {
+        val data = HashMap<String, String>()
+
+        data.put("userId", userId)
+        data.put("tag", "load")
+
+        postDataForLoad(LoginActivity().url, data)
+    }
+
+    fun postDataForLoad(url: String, data: HashMap<String, String>) {
+//        var requstQueue = Volley.newRequestQueue(this)
+
+        val jsonRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject(data),
+                Response.Listener { response ->
+                    var friend_list = response.getJSONArray("friendList")
+                    jsonArrayParsing(friend_list)
+
+                    val contact_adapter = MyContact.contactAdapter(contact_list, MyContact().context)
+                    MyContact().recyclerView.setAdapter(contact_adapter)
+
+                },
+                Response.ErrorListener { error ->1
+                    error.toString()
+                    print("error")
+                }
+        ) {
+
+            //here I want to post data to sever
+        }
+//        requstQueue.add(jsonobj)
+        MySingleton.getInstance(this).addToRequestQueue(jsonRequest)
+    }
+
+    fun jsonArrayParsing(json_array : JSONArray){
+        for(i in 0 until json_array.length()-1 ){
+            var json_obj = json_array.getJSONObject(i)
+            var name  = json_obj.getString("name")
+            var phone_number = json_obj.getString("phoneNumber")
+            var profile = json_obj.getString("profile")
+
+            var contact = Contact(name, phone_number, profile)
+            contact_list.add(contact)
+
+        }
+    }
+
     class PlaceholderFragment : Fragment() {
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
