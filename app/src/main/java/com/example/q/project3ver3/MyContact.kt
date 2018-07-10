@@ -1,6 +1,7 @@
 package com.example.q.project3ver3
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
@@ -19,6 +20,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.q.project3ver3.model.Contact
+import com.example.q.project3ver3.utils.RecyclerTouchListener
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashMap
@@ -26,6 +28,7 @@ import kotlin.collections.ArrayList
 
 var contact_list = ArrayList<Contact>()
 const val ADD_FRIEND = 1
+const val DEL_FRIEND = 2
 
 class MyContact : Fragment() {
 
@@ -51,6 +54,18 @@ class MyContact : Fragment() {
         fab.setOnClickListener { view ->
             showAddDialog()
         }
+
+        //item 클릭시 연락처 수정 삭제
+
+        recyclerView.addOnItemTouchListener(RecyclerTouchListener(this.requireContext(),
+                recyclerView, object : RecyclerTouchListener.ClickListener {
+
+            override fun onClick(view: View, position: Int) {}
+
+            override fun onLongClick(view: View?, position: Int) {
+                showActionsDialog(position);
+            }
+        }))
 
         return rootView
     }
@@ -156,6 +171,55 @@ class MyContact : Fragment() {
                     result = response.getString("result")
 
                     if(result == "add_complete"){
+                        loadData(userId)
+                    }
+
+                },
+                Response.ErrorListener { error ->
+                    print("error")
+                }
+        ) {
+
+            //here I want to post data to sever
+        }
+        requstQueue.add(jsonobj)
+    }
+
+    private fun showActionsDialog(position: Int) {
+        val colors = arrayOf<CharSequence>("Edit", "Delete")
+        var result : Int? = null
+        val builder = AlertDialog.Builder(activity!!)
+        builder.setTitle("Choose option")
+        builder.setItems(colors) { dialog, which ->
+            if (which == 0) {
+//                showContactDialog(true, contactList.get(position), position)
+            } else {
+                result = deleteContact(userId, position)
+            }
+        }
+        builder.show()
+    }
+
+    fun deleteContact(userId : String, position : Int) : Int?{
+        val data = HashMap<String,String>()
+
+        data.put("userId", userId)
+        data.put("index",position.toString())
+        data.put("tag", "delete_contact")
+
+        postDataForDelete(LoginActivity().url,data)
+
+        return DEL_FRIEND
+    }
+    fun postDataForDelete(url: String, data: HashMap<String,String>) {
+        val requstQueue = Volley.newRequestQueue(this.requireContext())
+        var result : String
+
+        val jsonobj = object : JsonObjectRequest(Request.Method.POST, url, JSONObject(data),
+                Response.Listener { response ->
+                    result = response.getString("result")
+
+                    if(result == "delete_complete"){
                         loadData(userId)
                     }
 
