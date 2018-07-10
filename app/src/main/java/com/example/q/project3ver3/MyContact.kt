@@ -29,6 +29,8 @@ import kotlin.collections.ArrayList
 var contact_list = ArrayList<Contact>()
 const val ADD_FRIEND = 1
 const val DEL_FRIEND = 2
+const val EDIT_FRIEND = 3
+
 
 class MyContact : Fragment() {
 
@@ -192,12 +194,21 @@ class MyContact : Fragment() {
         builder.setTitle("Choose option")
         builder.setItems(colors) { dialog, which ->
             if (which == 0) {
-//                showContactDialog(true, contactList.get(position), position)
+                deleteContact(userId,position)
+                showAddDialog()
+                result = EDIT_FRIEND
             } else {
                 result = deleteContact(userId, position)
             }
         }
         builder.show()
+
+        if(result ==DEL_FRIEND){
+            Toast.makeText(this.requireContext(),"Deleted ", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            Toast.makeText(this.requireContext(),"Edit Completed ", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun deleteContact(userId : String, position : Int) : Int?{
