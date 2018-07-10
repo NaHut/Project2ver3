@@ -2,13 +2,17 @@ package com.example.q.project3ver3
 
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -21,6 +25,7 @@ import java.util.HashMap
 import kotlin.collections.ArrayList
 
 var contact_list = ArrayList<Contact>()
+const val ADD_FRIEND = 1
 
 class MyContact : Fragment() {
 
@@ -32,25 +37,27 @@ class MyContact : Fragment() {
         val rootView = inflater.inflate(R.layout.contact, container, false)
         recyclerView = rootView.findViewById<RecyclerView>(R.id.recyclerView)
         contact_list.clear()
+
         /*DB와 연결하고 DB의 값을 가져옴
         DB의 모든 친구 정보를 contactList에 넣어줌 */
         loadData(userId)
-        //리스터 필요
-
-//        val tmp = Contact("전형준","010-4830-0139","path")
-//        contact_list.add(tmp)
-//        contact_list.add(tmp)
 
         /*어뎁터와 연결하여 contact_item layout에 넣어줌 */
         val layout_manager : RecyclerView.LayoutManager = LinearLayoutManager(this.context)
         recyclerView.setLayoutManager(layout_manager)
-//        val contact_adapter = contactAdapter(contact_list,this.context)
-//        recyclerView.setAdapter(contact_adapter)
+
+        //연락처 추가 버튼
+        val fab = rootView.findViewById<View>(R.id.fab_add_contact) as FloatingActionButton
+        fab.setOnClickListener { view ->
+            showAddDialog()
+        }
 
         return rootView
     }
 
     fun loadData(userId: String) {
+        contact_list.clear()
+
         val data = HashMap<String, String>()
 
         data.put("userId", userId)
@@ -95,6 +102,72 @@ class MyContact : Fragment() {
             contact_list.add(contact)
 
         }
+    }
+    fun showAddDialog() {
+        val layoutInflater = LayoutInflater.from(this.requireContext())
+        val view = layoutInflater.inflate(R.layout.add_contact_dialog,null)
+
+        val alertDialogBuilderUserInput = AlertDialog.Builder(this.requireContext())
+        alertDialogBuilderUserInput.setView(view)
+
+        val input_friend_name = view.findViewById<EditText>(R.id.add_friend_name)
+        val input_friend_phoneN = view.findViewById<EditText>(R.id.add_friend_phoneN)
+
+        alertDialogBuilderUserInput.setPositiveButton("Register"){
+            dialog, which->
+            val result = addFriend(input_friend_name.text.toString(),input_friend_phoneN.text.toString())
+            if(result == ADD_FRIEND){
+                Toast.makeText(this.requireContext(), "Register OK", Toast.LENGTH_SHORT).show()
+                dialog.cancel()
+            }
+            else {
+                Toast.makeText(this.requireContext(), "ID is existed", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+        alertDialogBuilderUserInput.setNeutralButton("Cancel"){_,_->
+            Toast.makeText(this.requireContext(),"Canceled", Toast.LENGTH_SHORT).show()
+        }
+
+        val dialog: AlertDialog = alertDialogBuilderUserInput.create()
+
+        dialog.show()
+    }
+    fun addFriend(input_friend_name: String, input_friend_phoneN: String) : Int {
+        val data = HashMap<String,String>()
+
+        data.put("userId", userId)
+        data.put("name", input_friend_name)
+        data.put("phoneNumber", input_friend_phoneN)
+        data.put("tag", "add_contact")
+
+        postDataForAdd(LoginActivity().url,data)
+
+        return ADD_FRIEND
+    }
+
+    fun postDataForAdd(url: String, data: HashMap<String,String>) {
+        val requstQueue = Volley.newRequestQueue(this.requireContext())
+        var result : String
+
+        val jsonobj = object : JsonObjectRequest(Request.Method.POST, url, JSONObject(data),
+                Response.Listener { response ->
+                    result = response.getString("result")
+
+                    if(result == "add_complete"){
+                        loadData(userId)
+                    }
+
+                },
+                Response.ErrorListener { error ->
+                    print("error")
+                }
+        ) {
+
+            //here I want to post data to sever
+        }
+        requstQueue.add(jsonobj)
     }
 
      class contactAdapter(val items : ArrayList<Contact>, val context : Context?) : RecyclerView.Adapter<ViewHolder>() {
