@@ -25,8 +25,10 @@ var serverRes = NOT_MEMBER
 var userID : String = ""
 
 class LoginActivity : AppCompatActivity() {
-
-    val url = "http://143.248.36.215:8080"
+    //형준
+//   val url = "http://143.248.36.215:8080"
+    //성욱
+    val url = "http://52.231.71.23:8080"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +100,7 @@ class LoginActivity : AppCompatActivity() {
 
         alertDialogBuilderUserInput.setPositiveButton("Register"){
             dialog, which->
-            val result = signUp(inputId.text.toString(),inputPW.text.toString())
+            signUp(inputId.text.toString(),inputPW.text.toString())
 //            if(result == SIGN_UP){
 //                Toast.makeText(applicationContext, "Register OK", Toast.LENGTH_SHORT).show()
 //            }
@@ -117,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    fun signUp(userId: String, password: String) : Int {
+    fun signUp(userId: String, password: String)  {
         val data = HashMap<String,String>()
 
         data.put("userId", userId)
@@ -126,7 +128,7 @@ class LoginActivity : AppCompatActivity() {
 
         postDataForSign(url,data)
 
-        return serverRes
+
     }
 
     fun changeServerRes(result : String){
