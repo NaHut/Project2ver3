@@ -30,7 +30,7 @@ var contact_list = ArrayList<Contact>()
 const val ADD_FRIEND = 1
 const val DEL_FRIEND = 2
 const val EDIT_FRIEND = 3
-
+const val DEL_IMAGE = 4
 
 class MyContact : Fragment() {
 
