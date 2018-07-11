@@ -42,15 +42,6 @@ class MainActivity : AppCompatActivity() {
         val intent = getIntent()
         userId = intent.getStringExtra("userId")
 
-        //DB에서 contact_list의 필요한 값들을 load한다
-//        loadData(userId)
-
-        //contact 임의의 값
-//        val tmp = Contact("전형준","010-4830-0139","path")
-//        contact_list.add(tmp)
-//        contact_list.add(tmp)
-
-
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the three
@@ -65,12 +56,6 @@ class MainActivity : AppCompatActivity() {
 
         mViewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(mViewPager))
-
-        val fab = findViewById<View>(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
 
     }
 
@@ -107,7 +92,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun postDataForLoad(url: String, data: HashMap<String, String>) {
-//        var requstQueue = Volley.newRequestQueue(this)
 
         val jsonRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject(data),
                 Response.Listener { response ->
