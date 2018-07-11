@@ -1,6 +1,5 @@
 package com.example.q.project3ver3
 
-import android.app.ProgressDialog.show
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -13,7 +12,6 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.example.q.project3ver3.model.Contact
 import org.json.JSONObject
 import java.util.*
 
@@ -30,8 +28,6 @@ class LoginActivity : AppCompatActivity() {
 
     val url = "http://143.248.36.215:8080"
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity);
@@ -45,32 +41,22 @@ class LoginActivity : AppCompatActivity() {
         btnSignIn.setOnClickListener {
             var userId = inputUserId.text;
             var password = inputPassword.text;
-            var result = SignIn(userId.toString(), password.toString())
+//            var result = SignIn(userId.toString(), password.toString())
+            SignIn(userId.toString(), password.toString())
 
             userID = userId.toString()
 
-            if(result == LOGIN){
-
-                val myIntent = Intent(this,MainActivity::class.java)
-                myIntent.putExtra("userId", userID)
-                startActivity(myIntent)
-                finish()
-            }
-            else if(result == WRONG_PW){
-                Toast.makeText(this,"ERROR: Wrong PW", Toast.LENGTH_LONG).show()
-            }
-            else{
-                Toast.makeText(this,"ERROR: Please Register", Toast.LENGTH_LONG).show()
-            }
-
         }
 
+        //Sign Up 버튼
         btnSignUp.setOnClickListener {
             showSignDialog()
         }
+
+
     }
 
-    fun SignIn (userId : String , password : String) : Int{
+    fun SignIn (userId : String , password : String){
         val data = HashMap<String,String>()
 
         data.put("userId", userId)
@@ -79,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
 
         postDataForSign(url,data)
 
-        return serverRes
     }
 
     fun postDataForSign(url: String, data: HashMap<String,String>) {
@@ -90,8 +75,8 @@ class LoginActivity : AppCompatActivity() {
                 Response.Listener { response ->
                     result = response.getString("result")
                     changeServerRes(result)
-                    print("success")
-                },
+                    resultStatus(serverRes)
+                   },
                 Response.ErrorListener { error ->
                     print("error")
                 }
@@ -114,12 +99,12 @@ class LoginActivity : AppCompatActivity() {
         alertDialogBuilderUserInput.setPositiveButton("Register"){
             dialog, which->
             val result = signUp(inputId.text.toString(),inputPW.text.toString())
-            if(result == SIGN_UP){
-                Toast.makeText(applicationContext, "Register OK", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                Toast.makeText(applicationContext, "ID is existed", Toast.LENGTH_SHORT).show()
-            }
+//            if(result == SIGN_UP){
+//                Toast.makeText(applicationContext, "Register OK", Toast.LENGTH_SHORT).show()
+//            }
+//            else {
+//                Toast.makeText(applicationContext, "ID is existed", Toast.LENGTH_SHORT).show()
+//            }
 
         }
 
@@ -156,6 +141,32 @@ class LoginActivity : AppCompatActivity() {
 
     fun myGetUserId() : String{
         return userID
+    }
+
+    fun resultStatus(result : Int){
+        if(result == LOGIN){
+
+            val myIntent = Intent(this,MainActivity::class.java)
+            myIntent.putExtra("userId", userID)
+            startActivity(myIntent)
+            finish()
+        }
+        else if(result == WRONG_PW){
+            Toast.makeText(this,"ERROR: Wrong PW", Toast.LENGTH_LONG).show()
+        }
+        else if(result == NOT_MEMBER){
+            Toast.makeText(this,"ERROR: Please Register", Toast.LENGTH_LONG).show()
+        }
+
+        else if (result == SIGN_UP){
+            Toast.makeText(applicationContext, "Register OK", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            Toast.makeText(applicationContext, "ID is existed", Toast.LENGTH_SHORT).show()
+        }
+
+
+
     }
 }
 

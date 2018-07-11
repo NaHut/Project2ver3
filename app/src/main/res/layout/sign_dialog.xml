@@ -22,14 +22,14 @@
 
     <EditText
         android:id="@+id/signId"
-        android:hint="Enter your ID"
         android:layout_width="167dp"
         android:layout_height="42dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="52dp"
+        android:hint="Enter your ID"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,6 @@
 
     <EditText
         android:id="@+id/signPW"
-        android:hint = "Enter your PassWord"
         android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -46,9 +45,11 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:hint="Enter your PassWord"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signId" />
+        app:layout_constraintTop_toBottomOf="@+id/signId"
+        app:layout_constraintVertical_bias="0.236" />
 
 </android.support.constraint.ConstraintLayout>
